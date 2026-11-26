@@ -68,6 +68,36 @@ async function gunlukMumlar(sembol, limit = 400) {
   return ham.filter((k) => k[6] < simdi).map((k) => [k[0], +k[1], +k[2], +k[3], +k[4], +k[7]]);
 }
 
+// ------------------------------------------------------------------ yapay zekâ: hacim durumu sonrası 30 gün (DENEYLER.md §9, görev C)
+let MM = null;
+async function modelYukle() {
+  if (MM !== null) return MM;
+  try { const r = await fetch(new URL("meta_model.json", import.meta.url), { cache: "no-cache" }); MM = r.ok ? await r.json() : false; }
+  catch { MM = false; }
+  return MM;
+}
+const SKOR_ONB = new Map();
+async function mumNesne(sembol, aralik, limit) {
+  const ham = await spotAl(`/api/v3/klines?symbol=${encodeURIComponent(sembol)}&interval=${aralik}&limit=${limit}`);
+  const simdi = Date.now(), k = ham.filter((x) => x[6] < simdi);
+  return { t: k.map((x) => x[0]), o: k.map((x) => +x[1]), h: k.map((x) => +x[2]), l: k.map((x) => +x[3]), c: k.map((x) => +x[4]), v: k.map((x) => +x[7]) };
+}
+/** Hacim durumundaki coin için 30 gün sonra yükselme olasılığı (öğrenci model). Döner {p, durum} veya null. */
+async function hacimSkoru(sembol, sinifKod) {
+  const mm = await modelYukle();
+  const b = mm && mm.tf && mm.tf["1d"] && mm.tf["1d"].C;
+  if (!b || !b.model) return null;
+  const anahtar = sembol + "|" + sinifKod;
+  if (SKOR_ONB.has(anahtar)) return SKOR_ONB.get(anahtar);
+  const { ozellikler, agacTahmin } = await import("./meta.js");
+  if (!SKOR_ONB.has("BTC")) SKOR_ONB.set("BTC", mumNesne("BTCUSDT", "1d", 500).catch(() => null));
+  const [m, ust, btc] = await Promise.all([mumNesne(sembol, "1d", 500), mumNesne(sembol, "1w", 300).catch(() => null), SKOR_ONB.get("BTC")]);
+  const oz = ozellikler(m, ust, btc, 86400e3, 7 * 86400e3);
+  const sonuc = { p: agacTahmin(b.model, { ...oz, sinif: sinifKod }), durum: b.durum, bilgi: b };
+  SKOR_ONB.set(anahtar, sonuc);
+  return sonuc;
+}
+
 // ------------------------------------------------------------------ ölçüler (tarama.py ile aynı)
 const ort = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : NaN);
 
@@ -239,11 +269,34 @@ export function ekranKur(kok, secenek = {}) {
       icerik.replaceChildren(secim,
         el("p", { class: "aciklama" }, SINIF_ACIKLAMA[d.sinif].replace("{e}", esik()[d.sinif === "patlama" ? "patlama" : d.sinif === "artan" ? "artan" : "kuruma"])),
         istatistikKutusu(ist),
-        tabloCiz(liste.slice(0, 50), [["Coin", coinHucre], ["24s hacim $", (x) => usd(x.hacim24)], ["Dün/20g", (x) => kat(x.hacim_patlama)],
+        aiAciklama(),
+        tabloCiz(liste.slice(0, 50), [["Coin", coinHucre], ["🤖 30g yükselme", (x) => el("span", { class: "ai-hucre", "data-s": x.sembol }, "…")],
+          ["24s hacim $", (x) => usd(x.hacim24)], ["Dün/20g", (x) => kat(x.hacim_patlama)],
           ["7g/30g", (x) => kat(x.hacim_egilim)], ["7g/90g", (x) => kat(x.hacim_kuruma)], ["7 gün", (x) => yuzde(x.g7), renk("g7")],
           ["30 gün", (x) => yuzde(x.g30), renk("g30")], ["3 ay", (x) => yuzde(x.g90), renk("g90")]]),
         el("p", { class: "not" }, `${liste.length} coin bu durumda.`));
+      skorlariDoldur(liste.slice(0, 50), S.indexOf(d.sinif));
     }
+  }
+
+  function aiAciklama() {
+    const b = MM && MM.tf && MM.tf["1d"] && MM.tf["1d"].C;
+    if (!b) return null;
+    return el("p", { class: "not" }, `🤖 Yapay zekâ skoru: bu coinin 30 gün sonra bugünkünden yüksek olma olasılığı. `,
+      b.durum === "dogrulanmis" ? `Doğrulanmış: geçmiş testte (${b.n_test} olay) en yüksek skorlu üçte bir %${Math.round(b.isabet_ust * 100)} yükseldi, tümü %${Math.round(b.isabet * 100)}.`
+        : "🧪 Deneysel: geçmiş testi geçemedi.");
+  }
+  async function skorlariDoldur(liste, sinifKod) {
+    await modelYukle();
+    if (!MM) { $$(".ai-hucre", icerik).forEach((h) => { h.textContent = "-"; }); return; }
+    await havuz(liste, 4, async (x) => {
+      let s = null;
+      try { s = await hacimSkoru(x.sembol, sinifKod); } catch { /* veri yok */ }
+      const h = icerik.querySelector(`.ai-hucre[data-s="${x.sembol}"]`);
+      if (!h) return;
+      h.textContent = s ? "%" + Math.round(s.p * 100) : "-";
+      if (s) h.className = "ai-hucre " + (s.p >= s.bilgi.esik_ust ? "pozitif" : "");
+    });
   }
 
   function istatistikKutusu(ist) {

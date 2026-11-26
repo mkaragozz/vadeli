@@ -5,10 +5,11 @@
  */
 import { tara, spotAl, havuz, el } from "./tarama.js";
 import * as F from "./formasyon.js";
+import { ozellikler, agacTahmin, SINYAL_KOD } from "./meta.js";
 
-const TF = { "3d": { ad: "3 Günlük", ms: 3 * 86400e3, limit: 300, ofs: 86400e3 },
-  "1w": { ad: "Haftalık", ms: 7 * 86400e3, limit: 300, ofs: 4 * 86400e3 }, "4h": { ad: "4 Saat", ms: 4 * 3600e3, limit: 300 },
-  "1d": { ad: "Günlük", ms: 86400e3, limit: 300 } };
+const TF = { "3d": { ad: "3 Günlük", ms: 3 * 86400e3, limit: 500, ofs: 86400e3 },
+  "1w": { ad: "Haftalık", ms: 7 * 86400e3, limit: 500, ofs: 4 * 86400e3 }, "4h": { ad: "4 Saat", ms: 4 * 3600e3, limit: 500 },
+  "1d": { ad: "Günlük", ms: 86400e3, limit: 500 } };
 const MALIYET = 0.0015;
 // İki bölüm (kullanıcı isteği): 4 saat · günlük ve 3 gün · haftalık; her birinde "teyitli" = küçük TF sinyali + büyük TF trendi
 const TEYIT = { "4h": "1d", "3d": "1w" };
@@ -57,6 +58,22 @@ function hedefler(m, yon) {
     sev_hedef: a.hedef, sev_stop: a.stop };
 }
 
+// ------------------------------------------------------------------ yapay zekâ skoru (DENEYLER.md §9)
+const UST = { "4h": "1d", "1d": "1w", "3d": "1w", "1w": null };
+let MM = null;
+async function modelYukle() {
+  if (MM !== null) return MM;
+  try { const r = await fetch(new URL("meta_model.json", import.meta.url), { cache: "no-cache" }); MM = r.ok ? await r.json() : false; }
+  catch { MM = false; }
+  return MM;
+}
+/** g: "A" | "B" | "C" | "D"; ek: görev sütunları (sinyal, yon, sinif). Döner {p, durum, bilgi} veya null. */
+export function skor(tf, g, oz, ek = {}) {
+  const b = MM && MM.tf && MM.tf[tf] && MM.tf[tf][g];
+  if (!b || !b.model || !oz) return null;
+  return { p: agacTahmin(b.model, { ...oz, ...ek }), durum: b.durum, bilgi: b };
+}
+
 // ------------------------------------------------------------------ istatistik
 let IST = null;
 async function istatistikYukle() {
@@ -84,10 +101,20 @@ async function tfTara(semboller, tf, ilerleme, zorla) {
     catch { /* yok */ }
   }
   const sonuc = {};
+  await modelYukle();
+  let btc = null;
+  try { btc = await mumlar("BTCUSDT", tf); } catch { /* BTC yoksa ilgili özellik bilinmiyor sayılır */ }
   await havuz(semboller, 8, async (s) => {
     const m = await mumlar(s, tf);
     const x = sonSinyaller(m);
-    if (x) sonuc[s] = { ...x, hedef_l: x.sinyaller.some((y) => y.yon === 1) ? hedefler(m, 1) : null,
+    if (!x) return;
+    let oz = null;
+    if (MM) {
+      let ust = null;
+      if (UST[tf]) { try { ust = await mumlar(s, UST[tf]); } catch { /* yok */ } }
+      oz = ozellikler(m, ust, btc, TF[tf].ms, UST[tf] ? TF[UST[tf]].ms : 0);
+    }
+    sonuc[s] = { ...x, oz, hedef_l: x.sinyaller.some((y) => y.yon === 1) ? hedefler(m, 1) : null,
       hedef_s: x.sinyaller.some((y) => y.yon === -1) ? hedefler(m, -1) : null };
   }, ilerleme);
   ONB[tf] = { kapanis, n: semboller.length, sonuc };
@@ -235,11 +262,28 @@ export function ekranKur(kok) {
         const umut = !dog && Object.values(st).some((y) => y && y.umut);
         if (d.dogrulanmis === "dog" && !dog) continue;
         if (d.dogrulanmis === "umut" && !dog && !umut) continue;
-        out.push({ sembol: s, meta, ...sg, st, dog, umut, tf, zaman: x.zaman, hedef: sg.yon === 1 ? x.hedef_l : x.hedef_s });
+        const ai = skor(tf, "A", x.oz, { sinyal: SINYAL_KOD[sg.ad], yon: sg.yon });
+        const di = sg.ad === "dd_kirilim" ? skor(tf, "D", x.oz, { yon: sg.yon }) : null;
+        const yi = skor(tf, "B", x.oz);
+        out.push({ sembol: s, meta, ...sg, st, dog, umut, tf, ai, di, yi, zaman: x.zaman, hedef: sg.yon === 1 ? x.hedef_l : x.hedef_s });
       }
     }
     out.sort((a, b) => (b.dog - a.dog) || (b.umut - a.umut) || ((b.st["1:1"]?.isabet ?? 0) - (a.st["1:1"]?.isabet ?? 0)) || (b.meta.hacim24 || 0) - (a.meta.hacim24 || 0));
     return out;
+  }
+
+  function aiSatir(x) {
+    const parca = [];
+    const rozet = (k) => el("span", { class: "ai-rozet " + k.durum, title: k.durum === "dogrulanmis"
+      ? "Görülmemiş geçmiş veride basit yöntemleri yendi (DENEYLER.md §9)" : "Testi geçemedi; deneme amaçlı gösteriliyor" },
+      k.durum === "dogrulanmis" ? "doğrulanmış" : "🧪 deneysel");
+    if (x.ai) parca.push(el("div", { class: "ai" }, el("span", {}, "🤖 Yapay zekâ: bu sinyalin tutma olasılığı"),
+      el("b", { class: x.ai.p >= x.ai.bilgi.esik_ust ? "pozitif" : "" }, oran(x.ai.p)), rozet(x.ai),
+      el("i", {}, `geçmiş testte en yüksek skorlu üçte bir %${Math.round(x.ai.bilgi.isabet_ust * 100)} tuttu (tümü %${Math.round(x.ai.bilgi.isabet * 100)})`)));
+    if (x.di) parca.push(el("div", { class: "ai" }, el("span", {}, "🤖 Sonraki seviyeye ulaşma"), el("b", {}, oran(x.di.p)), rozet(x.di)));
+    if (x.yi) parca.push(el("div", { class: "ai" }, el("span", {}, `🤖 ${TF[x.tf].ad} yön: sonraki dönemde yükselme`),
+      el("b", {}, oran(x.yi.p)), rozet(x.yi)));
+    return parca.length ? el("div", { class: "ai-kutu" }, parca) : null;
   }
 
   function sinyalKarti(x) {
@@ -259,6 +303,7 @@ export function ekranKur(kok) {
           : x.umut ? el("span", { class: "umut-rozet", title: "Bütün testleri geçti ama geçmişte 300'den az kez görüldü: umut verici, kesin değil" }, "◆ umut verici · az olay") : null),
       el("div", { class: "form-ad" }, F.AD[x.ad], el("span", { class: "soluk" }, ` · ${TF[x.tf].ad}${teyitli(d.sekme) ? ` · ${TF[TEYIT[x.tf]].ad.toLowerCase()} trend teyitli` : ""}`)),
       el("div", { class: "isabetler" }, st("1:1", "Yakın hedef"), st("1:2", "Uzak hedef"), st("seviye", "Seviye hedefi")),
+      aiSatir(x),
       h ? el("div", { class: "fiyatlar" },
         el("div", {}, el("span", {}, "Giriş ~"), el("b", {}, fiyatMetin(h.giris))),
         el("div", {}, el("span", {}, "Stop"), el("b", { class: "negatif" }, fiyatMetin(h.stop)), el("i", {}, yuzde(h.stop / h.giris - 1))),

@@ -295,3 +295,11 @@ th:first-child, td:first-child { background: var(--kart); }
 .baslik #durumMetin { order: 5; flex-basis: 100%; }
 .ust button.ikincil, .ust #yenile, .ust #temaDugme, .ust .kur-bandi button.ikincil {
   background: transparent; color: var(--ust-yazi); border: 1px solid var(--ust-kenar); }
+.ai-kutu { display: flex; flex-direction: column; gap: 4px; background: var(--kart2); border-radius: 10px; padding: 8px 10px; }
+.ai { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; font-size: 13px; }
+.ai span:first-child { color: var(--soluk); }
+.ai b { font-size: 16px; font-variant-numeric: tabular-nums; }
+.ai i { flex-basis: 100%; font-style: normal; font-size: 11px; color: var(--soluk); }
+.ai-rozet { font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; }
+.ai-rozet.dogrulanmis { color: var(--yesil); background: color-mix(in srgb, var(--yesil) 14%, transparent); }
+.ai-rozet.deneysel { color: var(--mavi); background: color-mix(in srgb, var(--mavi) 14%, transparent); }

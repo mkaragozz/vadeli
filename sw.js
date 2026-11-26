@@ -1,6 +1,6 @@
 /* Vadeli Tarayıcı (telefon) — yalnızca uygulama kabuğunu önbellekler; Binance verisini ASLA önbelleklemez. */
-const SURUM = "vadeli-4";
-const KABUK = ["./", "index.html", "stil.css?v=4", "tema.js", "lib/exo-2-latin-800-normal.woff2", "lib/exo-2-latin-ext-800-normal.woff2", "uygulama.js?v=2", "tarama.js", "tarama_baslat.js?v=2", "analiz.js", "formasyon.js", "formasyon_istatistik.json", "tarama_istatistik.json", "strateji.js", "binance.js",
+const SURUM = "vadeli-5";
+const KABUK = ["./", "index.html", "stil.css?v=4", "tema.js", "lib/exo-2-latin-800-normal.woff2", "lib/exo-2-latin-ext-800-normal.woff2", "uygulama.js?v=2", "tarama.js", "tarama_baslat.js?v=2", "analiz.js", "meta.js", "meta_model.json", "formasyon.js", "formasyon_istatistik.json", "tarama_istatistik.json", "strateji.js", "binance.js",
   "lib/lightweight-charts.standalone.production.js", "manifest.json", "ikon.svg", "ikon-192.png", "ikon-512.png"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(SURUM).then((c) => c.addAll(KABUK))); self.skipWaiting(); });
 self.addEventListener("activate", (e) => {
