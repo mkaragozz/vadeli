@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1419">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Vadeli">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://fapi.binance.com; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Vadeli Tarayıcı</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-192.png">
+<link rel="stylesheet" href="stil.css?v=1">
+</head>
+<body>
+<header class="ust">
+  <div class="baslik">
+    <strong>Vadeli Tarayıcı</strong>
+    <span id="baglanti" class="nokta sari" title="Durum"></span>
+    <span id="durumMetin" class="durum">başlıyor…</span>
+    <button id="yenile" class="kucuk ikincil" aria-label="Şimdi tara">↻</button>
+  </div>
+  <div class="uyari">Kaldıraç zarar riskini büyütür; stop'u borsada gir. Yatırım tavsiyesi değildir.</div>
+  <div id="kurBandi" class="kur-bandi gizli">
+    <span id="kurBandiMetin"></span>
+    <button id="kurBandiDugme" class="kucuk gizli">Yükle</button>
+    <button id="kurBandiKapat" class="kucuk ikincil" aria-label="Kapat">✕</button>
+  </div>
+  <nav class="sekmeler" id="sekmeler">
+    <a href="#/sinyaller" data-sekme="sinyaller">Sinyaller</a>
+    <a href="#/grafik" data-sekme="grafik">Grafik</a>
+    <a href="#/pozisyonlar" data-sekme="pozisyonlar">Pozisyonlarım</a>
+    <a href="#/ayarlar" data-sekme="ayarlar">Ayarlar</a>
+  </nav>
+</header>
+
+<main>
+  <section id="s-sinyaller" class="ekran gizli">
+    <div class="altsekme">
+      <button data-alt="aktif" class="secili">Aktif <span id="sayAktif" class="rozet">0</span></button>
+      <button data-alt="yaklasan">Yaklaşanlar <span id="sayYaklasan" class="rozet">0</span></button>
+    </div>
+    <div class="filtre">
+      <select id="fYon" aria-label="Yön"><option value="">Tüm yönler</option><option>LONG</option><option>SHORT</option></select>
+      <select id="fEtiket" aria-label="Etiket"><option value="">YENİ + devam</option><option value="YENI">Yalnız YENİ</option><option value="DEVAM">Yalnız devam</option></select>
+      <select id="fSirala" aria-label="Sıralama"><option value="yenilik">Sırala: yenilik</option><option value="hacim">hacim</option><option value="stop">stop %</option></select>
+    </div>
+    <div id="ilerleme" class="soluk"></div>
+    <div id="sinyalListe" class="kartlar"></div>
+    <p class="not">Sinyaller 4 saatlik mum kapanışlarında oluşur (TR saatiyle 03, 07, 11, 15, 19, 23). Fiyat = sinyal mumunun
+      kapanışı; giriş sonraki 4s mumun açılışında. Kaldıraç yalnızca teminatı belirler; risk stop mesafesi ve pozisyon
+      büyüklüğüyle belirlenir. Strateji: 4s kırılım 20/10, 3×ATR takip eden stop, EMA200 rejimi, BTC rejimi, açık pozisyon
+      teyidi (geçmiş veride doğrulanan sürüm <span id="surum"></span>). Bu telefon sürümü yalnızca uygulama açıkken tarar.</p>
+  </section>
+
+  <section id="s-grafik" class="ekran gizli">
+    <div class="filtre"><input id="gSembol" list="sembolListe" placeholder="Sembol (ör. BTCUSDT)" maxlength="20" aria-label="Sembol">
+      <datalist id="sembolListe"></datalist></div>
+    <div id="grafikBilgi" class="soluk"></div>
+    <div id="grafik" class="grafik"></div>
+    <p class="not">4 saatlik mumlar · turuncu: EMA200 rejim çizgisi · mavi kesikli: 20 mumluk giriş kanalı · oklar: YENİ sinyaller ·
+      yatay çizgiler: giriş / stop / likidasyon. Grafik: TradingView Lightweight Charts™ (Apache 2.0, yerel dosya; veri doğrudan Binance'ten).</p>
+  </section>
+
+  <section id="s-pozisyonlar" class="ekran gizli">
+    <p class="uyari-kutu"><b>Sistem asla emir göndermez.</b> Kayıtlar yalnızca bu telefonda saklanır ve tamamen sizin girdiğiniz
+      bilgilere dayanır; işlemleri ve stop emrini borsada kendiniz yönetirsiniz.</p>
+    <details id="pozFormKutu" class="kart">
+      <summary>+ Pozisyon ekle</summary>
+      <form id="pozForm" class="form">
+        <label>Sembol <input name="sembol" required maxlength="20" placeholder="BTCUSDT"></label>
+        <label>Yön <select name="yon"><option>LONG</option><option>SHORT</option></select></label>
+        <label>Giriş fiyatı <input name="giris" type="number" step="any" min="0" required></label>
+        <label>Pozisyon $ <input name="notional" type="number" step="any" min="0" required></label>
+        <label>Kaldıraç <input name="kaldirac" type="number" step="1" min="1" max="125" value="5" required></label>
+        <label>Borsadaki stop <input name="stop" type="number" step="any" min="0" required></label>
+        <label class="genis">Not <input name="not" maxlength="500"></label>
+        <button type="submit">Kaydet</button>
+        <p class="hata" id="pozHata"></p>
+      </form>
+    </details>
+    <div id="pozListe" class="kartlar"></div>
+  </section>
+
+  <section id="s-ayarlar" class="ekran gizli">
+    <form id="ayarForm" class="kart form">
+      <label>Hesap büyüklüğü (USDT) <input name="hesap" type="number" step="any" min="10" max="10000000" required></label>
+      <label>İşlem başına risk % <input name="risk_yuzde" type="number" step="0.05" min="0.05" max="5" required></label>
+      <label>Maksimum kaldıraç <input name="max_kaldirac" type="number" step="1" min="1" max="50" required></label>
+      <label>İzlenen sembol sayısı <input name="sembol_sayisi" type="number" step="1" min="5" max="100" required></label>
+      <button type="submit">Kaydet</button>
+      <p id="ayarMesaj" class="soluk"></p>
+    </form>
+    <div class="kart">
+      <h3>Bildirim</h3>
+      <p class="soluk">Uygulama açıkken yeni sinyalde titreşim ve bildirim. Uygulama kapalıyken bildirim gelmez: 7/24 takip ve
+        Telegram bildirimi için bilgisayar sürümünü kullanın.</p>
+      <button id="bildirimIzni" class="ikincil">Bildirimlere izin ver</button>
+      <button id="yukleDugme" class="gizli">Bu telefona uygulama olarak yükle</button>
+    </div>
+    <div class="kart soluk">
+      <h3>Bu sürüm hakkında</h3>
+      <p>Telefon sürümü veriyi doğrudan Binance'in herkese açık uç noktalarından okur (API anahtarı yok, emir yok) ve bilgisayar
+        sürümüyle <b>aynı strateji kodunu</b> çalıştırır (eşdeğerlik testi ile doğrulandı). Geçmiş veri doğrulaması, backtest
+        raporları, 7/24 tarama ve Telegram için bilgisayar sürümüne bakın: github.com/mkaragozz/kitap-notlari → vadeli-tarayici (RAPOR.md).</p>
+      <p>Geçmiş veride (2022-2026, 22 coin) işlem başına ortalama +0.115 R; 2025-26'da +0.087 R (istatistiksel olarak kesin değil). Kâr garantisi değildir.</p>
+    </div>
+  </section>
+</main>
+
+<div id="bildirim" class="toast gizli" role="status"></div>
+<script src="lib/lightweight-charts.standalone.production.js"></script>
+<script type="module" src="uygulama.js?v=1"></script>
+</body>
+</html>
