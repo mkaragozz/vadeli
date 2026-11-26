@@ -209,3 +209,89 @@ th:first-child, td:first-child { background: var(--bg); }
 .umut-rozet { font-size: 12px; font-weight: 700; color: var(--mavi); background: color-mix(in srgb, var(--mavi) 14%, transparent);
   padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
 .isabet.umut { outline: 2px dashed color-mix(in srgb, var(--mavi) 60%, transparent); }
+
+/* ================= BORSA VERİ ANALİSTİ teması (borsa arayüzü tarzı; telefon ve pano ortak) =================
+   Seçim: <html data-tema="acik|koyu|karma">, özniteliksiz = otomatik (cihaz ayarı). Bu blok önceki temaların üstüne yazar. */
+@font-face { font-family: "Exo 2"; font-style: normal; font-weight: 800; font-display: swap;
+  src: url("lib/exo-2-latin-ext-800-normal.woff2") format("woff2");
+  unicode-range: U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Exo 2"; font-style: normal; font-weight: 800; font-display: swap;
+  src: url("lib/exo-2-latin-800-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* Açık (varsayılan değerler) */
+:root {
+  --bg: #fafafa; --kart: #ffffff; --kart2: #f5f5f5; --kenar: #eaecef; --yazi: #1e2329; --soluk: #707a8a;
+  --yesil: #03a66d; --kirmizi: #cf304a; --sari: #c99400; --mavi: #1e88e5; --vurgu: #fcd535; --vurgu-yazi: #1e2329;
+  --ust-bg: #ffffff; --ust-yazi: #1e2329; --ust-soluk: #707a8a; --ust-kenar: #eaecef; --altin: #f0b90b;
+  --golge: 0 1px 3px rgba(20,21,26,.06), 0 2px 8px rgba(71,77,87,.06); --yaricap: 12px; color-scheme: light;
+}
+/* Koyu */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema]) {
+    --bg: #0b0e11; --kart: #181a20; --kart2: #1e2329; --kenar: #2b3139; --yazi: #eaecef; --soluk: #929aa5;
+    --yesil: #2ebd85; --kirmizi: #f6465d; --sari: #f0b90b; --mavi: #3c90eb; --vurgu: #fcd535; --vurgu-yazi: #181a20;
+    --ust-bg: #181a20; --ust-yazi: #eaecef; --ust-soluk: #929aa5; --ust-kenar: #2b3139;
+    --golge: 0 2px 10px rgba(0,0,0,.35); color-scheme: dark;
+  }
+}
+:root[data-tema="koyu"] {
+  --bg: #0b0e11; --kart: #181a20; --kart2: #1e2329; --kenar: #2b3139; --yazi: #eaecef; --soluk: #929aa5;
+  --yesil: #2ebd85; --kirmizi: #f6465d; --sari: #f0b90b; --mavi: #3c90eb; --vurgu: #fcd535; --vurgu-yazi: #181a20;
+  --ust-bg: #181a20; --ust-yazi: #eaecef; --ust-soluk: #929aa5; --ust-kenar: #2b3139;
+  --golge: 0 2px 10px rgba(0,0,0,.35); color-scheme: dark;
+}
+/* Karma: koyu üst çubuk ve alt gezinme, açık içerik */
+:root[data-tema="karma"] {
+  --ust-bg: #181a20; --ust-yazi: #eaecef; --ust-soluk: #929aa5; --ust-kenar: #2b3139;
+}
+
+html, body { background: var(--bg); color: var(--yazi);
+  font-family: "BinancePlex", "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.ust { background: var(--ust-bg); color: var(--ust-yazi); border-bottom: 1px solid var(--ust-kenar); }
+.ust::after { display: none; }
+.ust .durum, .ust .uyari, .ust .kur-bandi { color: var(--ust-soluk); }
+.baslik { gap: 10px; }
+.marka { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.marka-ikon { width: 26px; height: 26px; flex: none; }
+.baslik strong, .marka-ad {
+  font-family: "Exo 2", "Arial Black", system-ui, sans-serif; font-weight: 800; font-size: 18px; letter-spacing: 1.2px;
+  text-transform: uppercase; color: var(--ust-yazi); white-space: nowrap; }
+.marka-ad b { color: var(--altin); font-weight: 800; }
+#temaDugme { margin-left: auto; min-height: 34px; min-width: 38px; padding: 4px 8px; font-size: 18px; line-height: 1;
+  background: transparent; color: var(--ust-yazi); border: 1px solid var(--ust-kenar); border-radius: 8px; font-weight: 400; }
+.sekmeler a { color: var(--ust-soluk); }
+.sekmeler a.secili { color: var(--ust-yazi); border-bottom-color: var(--altin); font-weight: 600; }
+.kart { background: var(--kart); border: 1px solid var(--kenar); border-radius: var(--yaricap); box-shadow: var(--golge); }
+input, select, button { border-radius: 8px; border-color: var(--kenar); background: var(--kart); color: var(--yazi); }
+button { background: var(--vurgu); border-color: var(--vurgu); color: var(--vurgu-yazi); font-weight: 600; }
+button.ikincil, .dugmeler button, .altsekme button { background: var(--kart2); color: var(--yazi); border-color: transparent; font-weight: 500; }
+.dugmeler button.secili, .altsekme button.secili { background: var(--vurgu); color: var(--vurgu-yazi); border-color: var(--vurgu); }
+button.tehlike { background: transparent; color: var(--kirmizi); border-color: var(--kirmizi); }
+.altsekme button { border-radius: 8px; }
+.bolumler { background: var(--kart2); border-color: var(--kenar); border-radius: 10px; }
+.bolumler button.secili { background: var(--vurgu); color: var(--vurgu-yazi); }
+.pozitif, .yon-LONG { color: var(--yesil); } .negatif, .yon-SHORT { color: var(--kirmizi); }
+.yildiz { color: var(--sari); background: color-mix(in srgb, var(--altin) 16%, transparent); }
+.isabet.dog { outline-color: color-mix(in srgb, var(--altin) 70%, transparent); }
+.uyari-kutu { border-color: color-mix(in srgb, var(--altin) 60%, transparent); background: color-mix(in srgb, var(--altin) 8%, transparent); border-radius: 8px; }
+.bilgi summary, .not a { color: var(--sari); }
+th:first-child, td:first-child { background: var(--kart); }
+.tablo-kap table { background: var(--kart); }
+.toast { background: var(--kart2); color: var(--yazi); border-color: var(--kenar); }
+@media (max-width: 520px) { .baslik strong, .marka-ad { font-size: 16px; letter-spacing: .8px; } }
+@media (max-width: 700px) {
+  .sekmeler { background: var(--ust-bg); border-top-color: var(--ust-kenar); }
+  .sekmeler a { color: var(--ust-soluk); }
+  .sekmeler a.secili { color: var(--ust-yazi); background: color-mix(in srgb, var(--altin) 16%, transparent); }
+}
+/* Başlık satırı: marka solda, düğmeler sağda; durum metni alt satırda */
+.baslik { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.baslik .marka { order: 1; }
+.baslik #baglanti { order: 2; }
+.baslik #yenile { order: 3; margin-left: auto; }
+.baslik #temaDugme { order: 4; margin-left: 0; }
+.baslik #yenile:only-of-type, .baslik #temaDugme:first-of-type { }
+.baslik #durumMetin { order: 5; flex-basis: 100%; }
+.ust button.ikincil, .ust #yenile, .ust #temaDugme, .ust .kur-bandi button.ikincil {
+  background: transparent; color: var(--ust-yazi); border: 1px solid var(--ust-kenar); }
