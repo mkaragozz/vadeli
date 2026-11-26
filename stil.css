@@ -206,3 +206,6 @@ th:first-child, td:first-child { background: var(--bg); }
 .bolumler button { background: transparent; color: var(--soluk); border: 0; border-radius: 10px; font-weight: 600; padding: 10px 8px; }
 .bolumler button.secili { background: var(--vurgu); color: var(--vurgu-yazi); box-shadow: var(--golge); }
 @media (max-width: 520px) { .bolumler { grid-template-columns: 1fr 1fr; } .bolumler button[data-b="alarm"] { grid-column: 1 / -1; } }
+.umut-rozet { font-size: 12px; font-weight: 700; color: var(--mavi); background: color-mix(in srgb, var(--mavi) 14%, transparent);
+  padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.isabet.umut { outline: 2px dashed color-mix(in srgb, var(--mavi) 60%, transparent); }

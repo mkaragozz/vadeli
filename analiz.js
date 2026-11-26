@@ -69,8 +69,8 @@ function ist(ad, tf, yon, k) {
   if (!IST) return null;
   const x = IST.s[`${ad}|${tf}|${yon === 1 ? "long" : "short"}|${k}`];
   if (!x) return null;
-  const [n, isabet, rastgele, ort_r, isabet_h, dog] = x;
-  return { n, isabet, rastgele, ort_r, isabet_h, dogrulanmis: !!dog };
+  const [n, isabet, rastgele, ort_r, isabet_h, dog, umut] = x;
+  return { n, isabet, rastgele, ort_r, isabet_h, dogrulanmis: !!dog, umut: !!umut };
 }
 
 // ------------------------------------------------------------------ tarama
@@ -169,7 +169,7 @@ export function alarmIzle() {
 // ------------------------------------------------------------------ arayüz
 const YON_AD = { 1: "AL", "-1": "SAT" };
 export function ekranKur(kok) {
-  const d = { sekme: "1d", bolum: "kisa", yon: "", dogrulanmis: false, minHacim: 1e7, pazar: "", veri: {}, evren: null, detay: null, ...oku() };
+  const d = { sekme: "1d", bolum: "kisa", yon: "", dogrulanmis: "", minHacim: 1e7, pazar: "", veri: {}, evren: null, detay: null, ...oku() };
   const durum = el("p", { class: "soluk" });
   const icerik = el("div");
   const sekBtn = (k, t) => el("button", { "data-s": k, onclick: () => { d.sekme = k; d.detay = null; yaz(d); yukle(); } }, t);
@@ -179,8 +179,9 @@ export function ekranKur(kok) {
   const sekmeler = el("div", { class: "altsekme analiz-sekme" });
   const yonSec = el("select", { "aria-label": "Yön", onchange: (e) => { d.yon = e.target.value; yaz(d); ciz(); } },
     el("option", { value: "" }, "Al + Sat"), el("option", { value: "1" }, "Yalnız AL"), el("option", { value: "-1" }, "Yalnız SAT"));
-  const dogSec = el("label", { class: "kutu" }, el("input", { type: "checkbox", onchange: (e) => { d.dogrulanmis = e.target.checked; yaz(d); ciz(); } }),
-    "Yalnız ★ doğrulanmış");
+  const dogSec = el("select", { "aria-label": "Güven", onchange: (e) => { d.dogrulanmis = e.target.value; yaz(d); ciz(); } },
+    el("option", { value: "" }, "Tüm sinyaller"), el("option", { value: "umut" }, "★ doğrulanmış + ◆ umut verici"),
+    el("option", { value: "dog" }, "Yalnız ★ doğrulanmış"));
   const hacSec = el("select", { "aria-label": "Minimum hacim", onchange: (e) => { d.minHacim = +e.target.value; yaz(d); d.veri = {}; yukle(); } },
     [[1e6, "Hacim ≥ 1M $"], [1e7, "≥ 10M $"], [5e7, "≥ 50M $"], [0, "Hepsi"]].map(([v, t]) => el("option", { value: v }, t)));
   const pazarSec = el("select", { "aria-label": "Piyasa", onchange: (e) => { d.pazar = e.target.value; yaz(d); ciz(); } },
@@ -231,11 +232,13 @@ export function ekranKur(kok) {
         }
         const st = { "1:1": ist(anahtar, tf, sg.yon, "1:1"), "1:2": ist(anahtar, tf, sg.yon, "1:2"), seviye: ist(anahtar, tf, sg.yon, "seviye") };
         const dog = Object.values(st).some((y) => y && y.dogrulanmis);
-        if (d.dogrulanmis && !dog) continue;
-        out.push({ sembol: s, meta, ...sg, st, dog, tf, zaman: x.zaman, hedef: sg.yon === 1 ? x.hedef_l : x.hedef_s });
+        const umut = !dog && Object.values(st).some((y) => y && y.umut);
+        if (d.dogrulanmis === "dog" && !dog) continue;
+        if (d.dogrulanmis === "umut" && !dog && !umut) continue;
+        out.push({ sembol: s, meta, ...sg, st, dog, umut, tf, zaman: x.zaman, hedef: sg.yon === 1 ? x.hedef_l : x.hedef_s });
       }
     }
-    out.sort((a, b) => (b.dog - a.dog) || ((b.st["1:1"]?.isabet ?? 0) - (a.st["1:1"]?.isabet ?? 0)) || (b.meta.hacim24 || 0) - (a.meta.hacim24 || 0));
+    out.sort((a, b) => (b.dog - a.dog) || (b.umut - a.umut) || ((b.st["1:1"]?.isabet ?? 0) - (a.st["1:1"]?.isabet ?? 0)) || (b.meta.hacim24 || 0) - (a.meta.hacim24 || 0));
     return out;
   }
 
@@ -243,8 +246,8 @@ export function ekranKur(kok) {
     const h = x.hedef, sat = x.yon === -1;
     const st = (k, etiket) => {
       const y = x.st[k];
-      return el("div", { class: "isabet" + (y && y.dogrulanmis ? " dog" : "") }, el("span", {}, etiket),
-        el("b", {}, y ? oran(y.isabet) : "-"), el("i", {}, y ? `rastgele ${oran(y.rastgele)}` : "veri yok"));
+      return el("div", { class: "isabet" + (y && y.dogrulanmis ? " dog" : y && y.umut ? " umut" : "") }, el("span", {}, etiket),
+        el("b", {}, y ? oran(y.isabet) : "-"), el("i", {}, y ? `rastgele ${oran(y.rastgele)} · ${y.n} olay` : "veri yok"));
     };
     const kopyala = (t, v) => el("button", { class: "kopya", onclick: async (e) => { e.stopPropagation();
       try { await navigator.clipboard.writeText(String(v)); } catch { /* yok */ } } }, t);
@@ -252,7 +255,8 @@ export function ekranKur(kok) {
       el("div", { class: "ust-satir" },
         el("div", {}, el("span", { class: "yon-rozet " + (sat ? "sat" : "al") }, YON_AD[x.yon]), " ",
           el("b", { class: "coin-ad" }, x.sembol.replace(/USDT$/, "")), x.meta.vadeli ? el("i", { class: "rozet-v" }, "V") : null),
-        x.dog ? el("span", { class: "yildiz", title: "Geçmiş testte kuralları geçti" }, "★ doğrulanmış") : null),
+        x.dog ? el("span", { class: "yildiz", title: "Geçmiş testte kuralları geçti" }, "★ doğrulanmış")
+          : x.umut ? el("span", { class: "umut-rozet", title: "Bütün testleri geçti ama geçmişte 300'den az kez görüldü: umut verici, kesin değil" }, "◆ umut verici · az olay") : null),
       el("div", { class: "form-ad" }, F.AD[x.ad], el("span", { class: "soluk" }, ` · ${TF[x.tf].ad}${teyitli(d.sekme) ? ` · ${TF[TEYIT[x.tf]].ad.toLowerCase()} trend teyitli` : ""}`)),
       el("div", { class: "isabetler" }, st("1:1", "Yakın hedef"), st("1:2", "Uzak hedef"), st("seviye", "Seviye hedefi")),
       h ? el("div", { class: "fiyatlar" },
@@ -262,6 +266,8 @@ export function ekranKur(kok) {
         el("div", {}, el("span", {}, "Hedef 1:2"), el("b", { class: "pozitif" }, fiyatMetin(h.h12)), el("i", {}, yuzde(h.h12 / h.giris - 1))),
         h.sev_hedef ? el("div", {}, el("span", {}, sat ? "Sonraki destek" : "Sonraki direnç"), el("b", { class: "pozitif" }, fiyatMetin(h.sev_hedef)),
           el("i", {}, `stop ${fiyatMetin(h.sev_stop)}`)) : null) : null,
+      h && Math.abs(h.stop / h.giris - 1) > 0.25 ? el("p", { class: "uyari-kutu" }, `Stop çok uzak (${yuzde(Math.abs(h.stop / h.giris - 1), 0).replace("+", "")}). `,
+        "Aynı riski almak için pozisyonu küçük tut (ör. hesabının %1'ini riske edeceksen pozisyon = hesap × %1 ÷ stop mesafesi); kaldıraç kullanma.") : null,
       el("p", { class: "not" }, sat ? "Vadeli: short · Spot: elinde varsa sat, yoksa alma." : "Spot veya vadeli: al. Stop'u borsaya hemen gir.",
         " Giriş fiyatı son kapanıştır; gerçek giriş sonraki mumun açılışı."));
   }
@@ -270,7 +276,7 @@ export function ekranKur(kok) {
     $$("button", bolumler).forEach((b) => b.classList.toggle("secili", b.dataset.b === d.bolum));
     sekmeler.replaceChildren(...(d.bolum === "alarm" ? [] : BOLUM[d.bolum].sekmeler.map(([k, t]) => sekBtn(k, t))));
     $$("button", sekmeler).forEach((b) => b.classList.toggle("secili", b.dataset.s === d.sekme));
-    yonSec.value = d.yon; hacSec.value = String(d.minHacim); pazarSec.value = d.pazar; dogSec.firstChild.checked = d.dogrulanmis;
+    yonSec.value = d.yon; hacSec.value = String(d.minHacim); pazarSec.value = d.pazar; dogSec.value = d.dogrulanmis;
     filtre.classList.toggle("gizli", d.sekme === "alarm" || !!d.detay);
     if (d.detay) return detayCiz(d.detay);
     if (d.sekme === "alarm") { durum.textContent = ""; return alarmCiz(); }
@@ -284,7 +290,8 @@ export function ekranKur(kok) {
         "Yakın hedef = stop kadar uzak (1:1), uzak hedef = stopun 2 katı (1:2), seviye hedefi = sonraki direnç/destek. ",
         "\"Rastgele\" aynı kurallarla rastgele girişin oranıdır: sinyal ancak rastgeleden yüksekse işe yarar. ",
         "★ doğrulanmış = önceden yazılmış sıkı testi geçti (yeterli olay, anlamlı fark, son iki yılda da tuttu, maliyet sonrası kâr). ",
-        "Hiçbir sinyal %80'e ulaşmadı; en iyileri %55-62."));
+        "◆ umut verici = aynı testleri geçti ama geçmişte yalnız 100-299 kez görüldü; daha az güvenilir. ",
+        "%80'e ulaşan tek sinyal haftalık RSI 30 dönüşü AL (◆, 270 olay); geri kalanların en iyileri %55-67."));
     icerik.replaceChildren(bilgi, s.length ? el("div", { class: "kartlar" }, s.slice(0, 120).map(sinyalKarti))
       : el("p", { class: "soluk" }, teyitli(d.sekme) ? `Şu an ${TF[TEYIT[tfAd]].ad.toLowerCase()} trendle teyitli ${TF[tfAd].ad.toLowerCase()} sinyal yok.` : "Bu mumda sinyal yok."));
   }
@@ -369,6 +376,6 @@ export function ekranKur(kok) {
 const $$ = (s, k = document) => [...k.querySelectorAll(s)];
 function oku() { try { const x = JSON.parse(localStorage.getItem("analiz:ayar") || "{}"); return { sekme: SEKMELER.includes(x.sekme) ? x.sekme : "1d",
   bolum: ["kisa", "uzun", "alarm"].includes(x.bolum) ? x.bolum : "kisa", yon: x.yon || "",
-  dogrulanmis: !!x.dogrulanmis, minHacim: x.minHacim ?? 1e7, pazar: x.pazar || "" }; } catch { return {}; } }
+  dogrulanmis: ["", "umut", "dog"].includes(x.dogrulanmis) ? x.dogrulanmis : "", minHacim: x.minHacim ?? 1e7, pazar: x.pazar || "" }; } catch { return {}; } }
 function yaz(d) { try { localStorage.setItem("analiz:ayar", JSON.stringify({ sekme: d.sekme, bolum: d.bolum, yon: d.yon, dogrulanmis: d.dogrulanmis,
   minHacim: d.minHacim, pazar: d.pazar })); } catch { /* yok */ } }
