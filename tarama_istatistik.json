@@ -1,0 +1,566 @@
+{
+ "olusturma": "2026-11-26",
+ "kaynak": "Binance spot arşivi (data.binance.vision)",
+ "donem": "2021-01 → 2026-10",
+ "sembol": 174,
+ "esikler": {
+  "patlama": 5.0,
+  "artan": 1.5,
+  "kuruma": 0.3
+ },
+ "esik_taramasi": {
+  "patlama": [
+   {
+    "esik": 2.0,
+    "olay": 19918,
+    "farkli_gun": 2070,
+    "g7": {
+     "n": 19816,
+     "yukselme_olasiligi": 0.4483245861929754,
+     "medyan": -0.015736925672765023,
+     "ortalama": 0.016598924241561362,
+     "dusme_10_olasiligi": 0.25428946306015343,
+     "yukselme_10_olasiligi": 0.21861122325393623,
+     "piyasa_yukselme_olasiligi": 0.4535509275949086,
+     "piyasa_medyan": -0.011202610015922876,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": -0.004534315656842147
+    },
+    "g30": {
+     "n": 19467,
+     "yukselme_olasiligi": 0.44726973853187446,
+     "medyan": -0.03761366767704599,
+     "ortalama": 0.07925449862864824,
+     "dusme_10_olasiligi": 0.40216777109980995,
+     "yukselme_10_olasiligi": 0.32331638156880876,
+     "piyasa_yukselme_olasiligi": 0.41644063965643896,
+     "piyasa_medyan": -0.048048196799930554,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": 0.010434529122884562
+    },
+    "g90": {
+     "n": 17909,
+     "yukselme_olasiligi": 0.3807582779608018,
+     "medyan": -0.13467048710601714,
+     "ortalama": 0.13072030183300448,
+     "dusme_10_olasiligi": 0.5327488972025238,
+     "yukselme_10_olasiligi": 0.3092299960913507,
+     "piyasa_yukselme_olasiligi": 0.3765255147761423,
+     "piyasa_medyan": -0.13587581448830965,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": 0.0012053273822925092
+    }
+   },
+   {
+    "esik": 3.0,
+    "olay": 8872,
+    "farkli_gun": 1854,
+    "g7": {
+     "n": 8827,
+     "yukselme_olasiligi": 0.4280049847060156,
+     "medyan": -0.024135156878519748,
+     "ortalama": 0.019785009602099342,
+     "dusme_10_olasiligi": 0.28888637136059814,
+     "yukselme_10_olasiligi": 0.221366262603376,
+     "piyasa_yukselme_olasiligi": 0.45323945232700197,
+     "piyasa_medyan": -0.011299435028248594,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": -0.012835721850271153
+    },
+    "g30": {
+     "n": 8606,
+     "yukselme_olasiligi": 0.43876365326516387,
+     "medyan": -0.04509967196009246,
+     "ortalama": 0.0882109012782384,
+     "dusme_10_olasiligi": 0.4190099930281199,
+     "yukselme_10_olasiligi": 0.3212874738554497,
+     "piyasa_yukselme_olasiligi": 0.4190377142738877,
+     "piyasa_medyan": -0.04664316747274355,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": 0.001543495512651094
+    },
+    "g90": {
+     "n": 7764,
+     "yukselme_olasiligi": 0.37004121586810923,
+     "medyan": -0.1508859476943208,
+     "ortalama": 0.14317544897889142,
+     "dusme_10_olasiligi": 0.544822256568779,
+     "yukselme_10_olasiligi": 0.30409582689335396,
+     "piyasa_yukselme_olasiligi": 0.37790754896492895,
+     "piyasa_medyan": -0.13404167333901879,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": -0.016844274355302002
+    }
+   },
+   {
+    "esik": 5.0,
+    "olay": 3585,
+    "farkli_gun": 1397,
+    "g7": {
+     "n": 3561,
+     "yukselme_olasiligi": 0.39483291210334176,
+     "medyan": -0.03846153846153855,
+     "ortalama": 0.018389443039080817,
+     "dusme_10_olasiligi": 0.33108677337826453,
+     "yukselme_10_olasiligi": 0.2159505756809885,
+     "piyasa_yukselme_olasiligi": 0.44930599820483136,
+     "piyasa_medyan": -0.01222446839651381,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": -0.026237070065024737
+    },
+    "g30": {
+     "n": 3439,
+     "yukselme_olasiligi": 0.41640011631288165,
+     "medyan": -0.06628425748884637,
+     "ortalama": 0.07932606301564349,
+     "dusme_10_olasiligi": 0.44751381215469616,
+     "yukselme_10_olasiligi": 0.3032858389066589,
+     "piyasa_yukselme_olasiligi": 0.4256126682586481,
+     "piyasa_medyan": -0.04317469726557205,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": -0.023109560223274317
+    },
+    "g90": {
+     "n": 3051,
+     "yukselme_olasiligi": 0.35889872173058013,
+     "medyan": -0.16925675675675678,
+     "ortalama": 0.13204437427352947,
+     "dusme_10_olasiligi": 0.5588331694526385,
+     "yukselme_10_olasiligi": 0.29334644378892166,
+     "piyasa_yukselme_olasiligi": 0.37902318414734654,
+     "piyasa_medyan": -0.1327102803738318,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": -0.036546476382924964
+    }
+   }
+  ],
+  "artan": [
+   {
+    "esik": 1.3,
+    "olay": 38062,
+    "farkli_gun": 2110,
+    "g7": {
+     "n": 37952,
+     "yukselme_olasiligi": 0.4620573355817875,
+     "medyan": -0.010504698648461819,
+     "ortalama": 0.015737237602007258,
+     "dusme_10_olasiligi": 0.22325569139966273,
+     "yukselme_10_olasiligi": 0.21479763912310287,
+     "piyasa_yukselme_olasiligi": 0.4545466950493969,
+     "piyasa_medyan": -0.01094308084441098,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": 0.0004383821959491607
+    },
+    "g30": {
+     "n": 37239,
+     "yukselme_olasiligi": 0.4364241789521738,
+     "medyan": -0.04250559284116329,
+     "ortalama": 0.0660879632119661,
+     "dusme_10_olasiligi": 0.40779827600096674,
+     "yukselme_10_olasiligi": 0.3163618786755821,
+     "piyasa_yukselme_olasiligi": 0.4146675932360436,
+     "piyasa_medyan": -0.04887607331571997,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": 0.006370480474556683
+    },
+    "g90": {
+     "n": 34435,
+     "yukselme_olasiligi": 0.3848700450123421,
+     "medyan": -0.12897077509529853,
+     "ortalama": 0.12698373988074377,
+     "dusme_10_olasiligi": 0.5266153622767533,
+     "yukselme_10_olasiligi": 0.3142151880354291,
+     "piyasa_yukselme_olasiligi": 0.37761295001143735,
+     "piyasa_medyan": -0.13461538461538458,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": 0.0056446095200860524
+    }
+   },
+   {
+    "esik": 1.5,
+    "olay": 24436,
+    "farkli_gun": 2062,
+    "g7": {
+     "n": 24347,
+     "yukselme_olasiligi": 0.4600156076724032,
+     "medyan": -0.011239368165249175,
+     "ortalama": 0.017501874563966024,
+     "dusme_10_olasiligi": 0.22742021604304433,
+     "yukselme_10_olasiligi": 0.21900028750975478,
+     "piyasa_yukselme_olasiligi": 0.4573922161801006,
+     "piyasa_medyan": -0.01020925828488295,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": -0.0010301098803662256
+    },
+    "g30": {
+     "n": 23816,
+     "yukselme_olasiligi": 0.44470104131676186,
+     "medyan": -0.03745454335305487,
+     "ortalama": 0.07962378464100771,
+     "dusme_10_olasiligi": 0.40166274773261673,
+     "yukselme_10_olasiligi": 0.327972791400739,
+     "piyasa_yukselme_olasiligi": 0.4161269276954643,
+     "piyasa_medyan": -0.04790293514732774,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": 0.010448391794272871
+    },
+    "g90": {
+     "n": 21775,
+     "yukselme_olasiligi": 0.3826406429391504,
+     "medyan": -0.13095238095238093,
+     "ortalama": 0.1392301464814873,
+     "dusme_10_olasiligi": 0.5288633754305396,
+     "yukselme_10_olasiligi": 0.3145350172215844,
+     "piyasa_yukselme_olasiligi": 0.37948383953385467,
+     "piyasa_medyan": -0.13266443701226316,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": 0.0017120560598822276
+    }
+   },
+   {
+    "esik": 2.0,
+    "olay": 8721,
+    "farkli_gun": 1811,
+    "g7": {
+     "n": 8661,
+     "yukselme_olasiligi": 0.44359773698187277,
+     "medyan": -0.018018018018017945,
+     "ortalama": 0.014453500747199326,
+     "dusme_10_olasiligi": 0.2502020551899319,
+     "yukselme_10_olasiligi": 0.21775776469229882,
+     "piyasa_yukselme_olasiligi": 0.4565809332648711,
+     "piyasa_medyan": -0.01044312729325425,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": -0.007574890724763694
+    },
+    "g30": {
+     "n": 8378,
+     "yukselme_olasiligi": 0.446287896872762,
+     "medyan": -0.038669426404663365,
+     "ortalama": 0.09508991769916063,
+     "dusme_10_olasiligi": 0.40475053712103126,
+     "yukselme_10_olasiligi": 0.335879684888995,
+     "piyasa_yukselme_olasiligi": 0.4209740208151267,
+     "piyasa_medyan": -0.04458268532918608,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": 0.005913258924522713
+    },
+    "g90": {
+     "n": 7446,
+     "yukselme_olasiligi": 0.35965619124362075,
+     "medyan": -0.15381656021639362,
+     "ortalama": 0.1409241360168282,
+     "dusme_10_olasiligi": 0.5484824066612947,
+     "yukselme_10_olasiligi": 0.2915659414450712,
+     "piyasa_yukselme_olasiligi": 0.3807434060822096,
+     "piyasa_medyan": -0.13169260346371392,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": -0.022123956752679697
+    }
+   }
+  ],
+  "kuruma": [
+   {
+    "esik": 0.3,
+    "olay": 16576,
+    "farkli_gun": 1678,
+    "g7": {
+     "n": 16449,
+     "yukselme_olasiligi": 0.455042859748313,
+     "medyan": -0.01035911602209949,
+     "ortalama": 0.0008073042063902198,
+     "dusme_10_olasiligi": 0.19709404827041158,
+     "yukselme_10_olasiligi": 0.17514742537540276,
+     "piyasa_yukselme_olasiligi": 0.4394151096669375,
+     "piyasa_medyan": -0.014060055303627528,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": 0.0037009392815280373
+    },
+    "g30": {
+     "n": 16128,
+     "yukselme_olasiligi": 0.44264632936507936,
+     "medyan": -0.03238892557619377,
+     "ortalama": 0.04641960814480481,
+     "dusme_10_olasiligi": 0.3776041666666667,
+     "yukselme_10_olasiligi": 0.2943328373015873,
+     "piyasa_yukselme_olasiligi": 0.399290332580488,
+     "piyasa_medyan": -0.05609356764318674,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": 0.023704642066992965
+    },
+    "g90": {
+     "n": 15015,
+     "yukselme_olasiligi": 0.4066600066600067,
+     "medyan": -0.10086767895878523,
+     "ortalama": 0.10535694328380667,
+     "dusme_10_olasiligi": 0.5009657009657009,
+     "yukselme_10_olasiligi": 0.33453213453213454,
+     "piyasa_yukselme_olasiligi": 0.3814113293982909,
+     "piyasa_medyan": -0.12521739130434795,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": 0.024349712345562713
+    }
+   },
+   {
+    "esik": 0.4,
+    "olay": 36111,
+    "farkli_gun": 1869,
+    "g7": {
+     "n": 35869,
+     "yukselme_olasiligi": 0.44721068331985836,
+     "medyan": -0.0117647058823529,
+     "ortalama": -0.002239114363940015,
+     "dusme_10_olasiligi": 0.20045164348044273,
+     "yukselme_10_olasiligi": 0.1693663051660208,
+     "piyasa_yukselme_olasiligi": 0.44778185788011116,
+     "piyasa_medyan": -0.012195121951219634,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": 0.00043041606886673467
+    },
+    "g30": {
+     "n": 35405,
+     "yukselme_olasiligi": 0.4236407287106341,
+     "medyan": -0.04364246747796896,
+     "ortalama": 0.029977196040166892,
+     "dusme_10_olasiligi": 0.3985877700889705,
+     "yukselme_10_olasiligi": 0.282728428188109,
+     "piyasa_yukselme_olasiligi": 0.4115321135288936,
+     "piyasa_medyan": -0.049700292222568165,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": 0.006057824744599205
+    },
+    "g90": {
+     "n": 33563,
+     "yukselme_olasiligi": 0.38602031999523284,
+     "medyan": -0.12112472963229992,
+     "ortalama": 0.06983332041964319,
+     "dusme_10_olasiligi": 0.521437297023508,
+     "yukselme_10_olasiligi": 0.31755206626344484,
+     "piyasa_yukselme_olasiligi": 0.380361770914046,
+     "piyasa_medyan": -0.12796208530805697,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": 0.006837355675757051
+    }
+   },
+   {
+    "esik": 0.5,
+    "olay": 59375,
+    "farkli_gun": 1985,
+    "g7": {
+     "n": 59004,
+     "yukselme_olasiligi": 0.4455291166700563,
+     "medyan": -0.012176262957013628,
+     "ortalama": -0.0021726966007562217,
+     "dusme_10_olasiligi": 0.20120669785099315,
+     "yukselme_10_olasiligi": 0.1685139990509118,
+     "piyasa_yukselme_olasiligi": 0.44809044009814764,
+     "piyasa_medyan": -0.012309920347574277,
+     "genel_yukselme_olasiligi": 0.45391903920620646,
+     "genel_medyan": -0.011131725417439675,
+     "fark_medyan": 0.00013365739056064863
+    },
+    "g30": {
+     "n": 58376,
+     "yukselme_olasiligi": 0.41030560504316843,
+     "medyan": -0.05073521214814264,
+     "ortalama": 0.017176562320561077,
+     "dusme_10_olasiligi": 0.41093942716184734,
+     "yukselme_10_olasiligi": 0.27285185692750447,
+     "piyasa_yukselme_olasiligi": 0.4112945752560462,
+     "piyasa_medyan": -0.050000000000000044,
+     "genel_yukselme_olasiligi": 0.4146515426914847,
+     "genel_medyan": -0.04886818664705406,
+     "fark_medyan": -0.0007352121481425944
+    },
+    "g90": {
+     "n": 55899,
+     "yukselme_olasiligi": 0.3782536360221113,
+     "medyan": -0.13035870516185466,
+     "ortalama": 0.04948526959802479,
+     "dusme_10_olasiligi": 0.5308860623624752,
+     "yukselme_10_olasiligi": 0.30907529651693233,
+     "piyasa_yukselme_olasiligi": 0.3772807383938304,
+     "piyasa_medyan": -0.1326037488159546,
+     "genel_yukselme_olasiligi": 0.37796474204086367,
+     "genel_medyan": -0.13428571428571423,
+     "fark_medyan": 0.002245043654099943
+    }
+   }
+  ]
+ },
+ "siniflar": {
+  "patlama": {
+   "olay": 3585,
+   "farkli_gun": 1397,
+   "g7": {
+    "n": 3561,
+    "yukselme_olasiligi": 0.39483291210334176,
+    "medyan": -0.03846153846153855,
+    "ortalama": 0.018389443039080817,
+    "dusme_10_olasiligi": 0.33108677337826453,
+    "yukselme_10_olasiligi": 0.2159505756809885,
+    "piyasa_yukselme_olasiligi": 0.44930599820483136,
+    "piyasa_medyan": -0.01222446839651381,
+    "genel_yukselme_olasiligi": 0.45391903920620646,
+    "genel_medyan": -0.011131725417439675,
+    "fark_medyan": -0.026237070065024737
+   },
+   "g30": {
+    "n": 3439,
+    "yukselme_olasiligi": 0.41640011631288165,
+    "medyan": -0.06628425748884637,
+    "ortalama": 0.07932606301564349,
+    "dusme_10_olasiligi": 0.44751381215469616,
+    "yukselme_10_olasiligi": 0.3032858389066589,
+    "piyasa_yukselme_olasiligi": 0.4256126682586481,
+    "piyasa_medyan": -0.04317469726557205,
+    "genel_yukselme_olasiligi": 0.4146515426914847,
+    "genel_medyan": -0.04886818664705406,
+    "fark_medyan": -0.023109560223274317
+   },
+   "g90": {
+    "n": 3051,
+    "yukselme_olasiligi": 0.35889872173058013,
+    "medyan": -0.16925675675675678,
+    "ortalama": 0.13204437427352947,
+    "dusme_10_olasiligi": 0.5588331694526385,
+    "yukselme_10_olasiligi": 0.29334644378892166,
+    "piyasa_yukselme_olasiligi": 0.37902318414734654,
+    "piyasa_medyan": -0.1327102803738318,
+    "genel_yukselme_olasiligi": 0.37796474204086367,
+    "genel_medyan": -0.13428571428571423,
+    "fark_medyan": -0.036546476382924964
+   },
+   "donem": "2021-01 → 2026-10",
+   "sembol": 174
+  },
+  "artan": {
+   "olay": 27138,
+   "farkli_gun": 2078,
+   "g7": {
+    "n": 27036,
+    "yukselme_olasiligi": 0.4595354342358337,
+    "medyan": -0.011488675846453245,
+    "ortalama": 0.01893509826259162,
+    "dusme_10_olasiligi": 0.23191300488237904,
+    "yukselme_10_olasiligi": 0.22181535730137594,
+    "piyasa_yukselme_olasiligi": 0.45636499254102436,
+    "piyasa_medyan": -0.010482180293501009,
+    "genel_yukselme_olasiligi": 0.45391903920620646,
+    "genel_medyan": -0.011131725417439675,
+    "fark_medyan": -0.0010064955529522357
+   },
+   "g30": {
+    "n": 26440,
+    "yukselme_olasiligi": 0.4483736762481089,
+    "medyan": -0.03581426273396687,
+    "ortalama": 0.08464819675106595,
+    "dusme_10_olasiligi": 0.40045385779122544,
+    "yukselme_10_olasiligi": 0.33199697428139185,
+    "piyasa_yukselme_olasiligi": 0.4151351402062049,
+    "piyasa_medyan": -0.048477235038584476,
+    "genel_yukselme_olasiligi": 0.4146515426914847,
+    "genel_medyan": -0.04886818664705406,
+    "fark_medyan": 0.012662972304617603
+   },
+   "g90": {
+    "n": 24167,
+    "yukselme_olasiligi": 0.38387056730251995,
+    "medyan": -0.12988729184421954,
+    "ortalama": 0.14573797496018315,
+    "dusme_10_olasiligi": 0.5279099598626226,
+    "yukselme_10_olasiligi": 0.3162163280506476,
+    "piyasa_yukselme_olasiligi": 0.3779825742222748,
+    "piyasa_medyan": -0.13428571428571423,
+    "genel_yukselme_olasiligi": 0.37796474204086367,
+    "genel_medyan": -0.13428571428571423,
+    "fark_medyan": 0.004398422441494687
+   },
+   "donem": "2021-01 → 2026-10",
+   "sembol": 174
+  },
+  "kuruma": {
+   "olay": 16576,
+   "farkli_gun": 1678,
+   "g7": {
+    "n": 16449,
+    "yukselme_olasiligi": 0.455042859748313,
+    "medyan": -0.01035911602209949,
+    "ortalama": 0.0008073042063902198,
+    "dusme_10_olasiligi": 0.19709404827041158,
+    "yukselme_10_olasiligi": 0.17514742537540276,
+    "piyasa_yukselme_olasiligi": 0.4394151096669375,
+    "piyasa_medyan": -0.014060055303627528,
+    "genel_yukselme_olasiligi": 0.45391903920620646,
+    "genel_medyan": -0.011131725417439675,
+    "fark_medyan": 0.0037009392815280373
+   },
+   "g30": {
+    "n": 16128,
+    "yukselme_olasiligi": 0.44264632936507936,
+    "medyan": -0.03238892557619377,
+    "ortalama": 0.04641960814480481,
+    "dusme_10_olasiligi": 0.3776041666666667,
+    "yukselme_10_olasiligi": 0.2943328373015873,
+    "piyasa_yukselme_olasiligi": 0.399290332580488,
+    "piyasa_medyan": -0.05609356764318674,
+    "genel_yukselme_olasiligi": 0.4146515426914847,
+    "genel_medyan": -0.04886818664705406,
+    "fark_medyan": 0.023704642066992965
+   },
+   "g90": {
+    "n": 15015,
+    "yukselme_olasiligi": 0.4066600066600067,
+    "medyan": -0.10086767895878523,
+    "ortalama": 0.10535694328380667,
+    "dusme_10_olasiligi": 0.5009657009657009,
+    "yukselme_10_olasiligi": 0.33453213453213454,
+    "piyasa_yukselme_olasiligi": 0.3814113293982909,
+    "piyasa_medyan": -0.12521739130434795,
+    "genel_yukselme_olasiligi": 0.37796474204086367,
+    "genel_medyan": -0.13428571428571423,
+    "fark_medyan": 0.024349712345562713
+   },
+   "donem": "2021-01 → 2026-10",
+   "sembol": 174
+  }
+ },
+ "genel": {
+  "g7": {
+   "yukselme_olasiligi": 0.45391903920620646,
+   "medyan": -0.011131725417439675
+  },
+  "g30": {
+   "yukselme_olasiligi": 0.4146515426914847,
+   "medyan": -0.04886818664705406
+  },
+  "g90": {
+   "yukselme_olasiligi": 0.37796474204086367,
+   "medyan": -0.13428571428571423
+  }
+ }
+}

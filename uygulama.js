@@ -137,7 +137,7 @@ document.addEventListener("visibilitychange", () => {
 $("#yenile").addEventListener("click", () => tara());
 
 // ------------------------------------------------------------------ yönlendirme
-function rota() { const h = location.hash.replace(/^#\/?/, "") || "sinyaller"; const [ad, q] = h.split("?"); return { ad, p: new URLSearchParams(q || "") }; }
+function rota() { const h = location.hash.replace(/^#\/?/, "") || "analiz"; const [ad, q] = h.split("?"); return { ad, p: new URLSearchParams(q || "") }; }
 function rotaYaz(ad, p) { const s = p.toString(); history.replaceState(null, "", "#/" + ad + (s ? "?" + s : "")); }
 function ekranYenile() {
   const { ad, p } = rota();
