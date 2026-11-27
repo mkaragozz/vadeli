@@ -1,0 +1,68 @@
+{
+  "name": "Borsa Veri Analisti",
+  "short_name": "Veri Analisti",
+  "description": "Kripto borsa verisi analizi: formasyon ve destek/direnç istatistiği, tarama, alarm (emir göndermez; yatırım tavsiyesi değildir)",
+  "lang": "tr",
+  "start_url": "/#/analiz",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0e11",
+  "theme_color": "#0b0e11",
+  "shortcuts": [
+    {
+      "name": "Analiz",
+      "url": "/#/analiz",
+      "icons": [
+        {
+          "src": "/static/ikon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Tarama",
+      "url": "/#/tarama",
+      "icons": [
+        {
+          "src": "/static/ikon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Alarmlar",
+      "url": "/#/analiz",
+      "icons": [
+        {
+          "src": "/static/ikon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "src": "/static/ikon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/ikon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/ikon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/ikon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

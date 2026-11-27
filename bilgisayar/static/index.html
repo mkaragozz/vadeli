@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0e11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Borsa Veri Analisti">
+<title>Borsa Veri Analisti</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/static/ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/static/ikon-192.png">
+<link rel="stylesheet" href="/static/stil.css">
+<script src="/static/tema.js"></script>
+</head>
+<body>
+<header class="ust">
+  <div class="baslik">
+    <span class="marka"><svg class="marka-ikon" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#f0b90b"/><rect x="7" y="16" width="4" height="9" rx="1" fill="#181a20"/><rect x="14" y="11" width="4" height="14" rx="1" fill="#181a20"/><rect x="21" y="6" width="4" height="19" rx="1" fill="#181a20"/></svg><strong class="marka-ad">Borsa Veri <b>Analisti</b></strong></span>
+    <span id="baglanti" class="nokta kirmizi" title="Canlı bağlantı"></span>
+    <span id="durumMetin" class="durum">bağlanıyor…</span>
+    <button id="temaDugme" type="button" class="ikincil" aria-label="Tema">◐</button>
+  </div>
+  <div class="uyari" id="uyari">Kaldıraç zarar riskini büyütür; stop'u borsada gir. Yatırım tavsiyesi değildir.</div>
+<div id="kurBandi" class="kur-bandi gizli">
+  <span id="kurBandiMetin"></span>
+  <button id="kurBandiDugme" class="kucuk gizli">Yükle</button>
+  <button id="kurBandiKapat" class="kucuk ikincil" aria-label="Kapat">✕</button>
+</div>
+<nav class="sekmeler" id="sekmeler">
+  <a href="#/analiz" data-sekme="analiz">Analiz</a>
+  <a href="#/sinyaller" data-sekme="sinyaller">Vadeli sinyal</a>
+  <a href="#/grafik" data-sekme="grafik">Grafik</a>
+  <a href="#/tarama" data-sekme="tarama">Tarama</a>
+  <a href="#/piyasa" data-sekme="piyasa">Piyasa</a>
+  <a href="#/pozisyonlar" data-sekme="pozisyonlar">Pozisyonlarım</a>
+  <a href="#/gecmis" data-sekme="gecmis">Geçmiş</a>
+  <a href="#/backtest" data-sekme="backtest">Backtest</a>
+  <a href="#/ayarlar" data-sekme="ayarlar">Ayarlar</a>
+</nav>
+</header>
+
+<main>
+  <!-- GİRİŞ -->
+  <section id="s-giris" class="ekran gizli">
+    <form id="girisForm" class="kart dar">
+      <h2>Giriş</h2>
+      <p class="soluk">Bu pano pozisyon bilgisi içerir ve parola ile korunur.</p>
+      <label>Parola <input type="password" id="girisParola" autocomplete="current-password" required maxlength="256"></label>
+      <button type="submit">Giriş</button>
+      <p id="girisHata" class="hata"></p>
+    </form>
+  </section>
+
+  <!-- SİNYALLER -->
+  <section id="s-sinyaller" class="ekran gizli">
+    <div id="ozetSerit" class="ozet-serit"></div>
+    <div class="altsekme">
+      <button data-alt="aktif" class="secili">Aktif <span id="sayAktif" class="rozet">0</span></button>
+      <button data-alt="yaklasan">Yaklaşanlar <span id="sayYaklasan" class="rozet">0</span></button>
+    </div>
+    <div class="filtre">
+      <select id="fYon" aria-label="Yön"><option value="">Tüm yönler</option><option>LONG</option><option>SHORT</option></select>
+      <select id="fSet" aria-label="Coin seti"><option value="">Tüm coinler</option><option value="ana">Yalnız ana set (doğrulanan 22)</option></select>
+      <select id="fEtiket" aria-label="Etiket"><option value="">YENİ + devam</option><option value="YENI">Yalnız YENİ</option><option value="DEVAM">Yalnız devam</option></select>
+      <select id="fHacim" aria-label="Minimum 24s hacim">
+        <option value="0">Hacim: hepsi</option><option value="50000000">≥ 50M $</option><option value="200000000">≥ 200M $</option>
+        <option value="1000000000">≥ 1B $</option>
+      </select>
+      <input id="fAra" type="search" placeholder="Sembol ara" maxlength="20" aria-label="Sembol ara">
+      <select id="fSirala" aria-label="Sıralama">
+        <option value="yenilik">Sırala: yenilik</option><option value="hacim">hacim</option>
+        <option value="stop">stop %</option><option value="risk">risk</option>
+      </select>
+    </div>
+    <p class="not">Fiyat = sinyal mumunun kapanışı. Giriş <b>sonraki <span id="tetikTf">1s</span> mumun açılışında</b>. Kaldıraç yalnızca teminatı belirler;
+      risk stop mesafesi ve pozisyon büyüklüğüyle belirlenir. <span id="paramMetin"></span></p>
+    <div id="sinyalListe" class="kartlar"></div>
+  </section>
+
+  <!-- GRAFİK -->
+  <section id="s-grafik" class="ekran gizli">
+    <div class="filtre">
+      <input id="gSembol" list="sembolListe" placeholder="Sembol (ör. BTCUSDT)" maxlength="20" aria-label="Sembol">
+      <datalist id="sembolListe"></datalist>
+      <div class="dugmeler">
+        <button data-aralik="1h" class="secili">1s</button>
+        <button data-aralik="4h">4s</button>
+      </div>
+    </div>
+    <div id="grafikBilgi" class="soluk"></div>
+    <div id="grafik" class="grafik"></div>
+    <div id="turevKutu" class="istat"></div>
+    <p id="turevNot" class="not"></p>
+    <p class="not">Turuncu: EMA(4s) rejim çizgisi · mavi kesikli: giriş kanalı (önceki N mum) · yatay çizgiler: giriş / stop / likidasyon.
+      Grafik kütüphanesi: TradingView Lightweight Charts™ (Apache 2.0, yerel dosya; veri kendi API'mizden).</p>
+  </section>
+
+  <!-- ANALİZ (telefonla ortak modül: mobil/analiz.js) -->
+  <section id="s-analiz" class="ekran gizli">
+    <div id="analizKok"></div>
+  </section>
+
+  <!-- TARAMA (telefonla ortak modül: mobil/tarama.js) -->
+  <section id="s-tarama" class="ekran gizli">
+    <div id="taramaKok"></div>
+  </section>
+
+  <!-- PİYASA -->
+  <section id="s-piyasa" class="ekran gizli">
+    <div id="piyasaGenel" class="istat"></div>
+    <div class="filtre">
+      <div class="dugmeler" id="haritaDonem">
+        <button data-d="d1s">1 saat</button><button data-d="d24s" class="secili">24 saat</button><button data-d="d7g">7 gün</button>
+      </div>
+      <label class="kutu soluk"><input type="checkbox" id="haritaVadeli"> yalnız Binance vadelide olanlar</label>
+    </div>
+    <div id="isiHaritasi" class="harita"></div>
+    <p id="piyasaNot" class="not"></p>
+  </section>
+
+  <!-- POZİSYONLAR -->
+  <section id="s-pozisyonlar" class="ekran gizli">
+    <p class="uyari-kutu"><b>Sistem asla emir göndermez.</b> Buradaki kayıtlar tamamen sizin girdiğiniz bilgilere dayanır;
+      işlemleri ve stop emrini borsada kendiniz yönetirsiniz.</p>
+    <details id="pozFormKutu" class="kart">
+      <summary>+ Pozisyon ekle</summary>
+      <form id="pozForm" class="form">
+        <label>Sembol <input name="sembol" required maxlength="20" placeholder="BTCUSDT"></label>
+        <label>Yön <select name="yon"><option>LONG</option><option>SHORT</option></select></label>
+        <label>Giriş fiyatı <input name="giris" type="number" step="any" min="0" required></label>
+        <label>Pozisyon $ <input name="notional" type="number" step="any" min="0" placeholder="veya miktar"></label>
+        <label>Miktar (adet) <input name="adet" type="number" step="any" min="0"></label>
+        <label>Kaldıraç <input name="kaldirac" type="number" step="1" min="1" max="125" value="5" required></label>
+        <label>Borsadaki stop <input name="stop" type="number" step="any" min="0" required></label>
+        <label class="genis">Not <input name="not_metni" maxlength="1000"></label>
+        <input type="hidden" name="sinyal_id">
+        <button type="submit">Kaydet</button>
+        <p class="hata" id="pozHata"></p>
+      </form>
+    </details>
+    <div id="pozListe" class="kartlar"></div>
+  </section>
+
+  <!-- GEÇMİŞ -->
+  <section id="s-gecmis" class="ekran gizli">
+    <div id="ileriTest" class="kart ileri"></div>
+    <div id="gecmisOzet"></div>
+    <h3>Sembol bazında</h3>
+    <div class="tablo-kap"><table id="gecmisSembol"></table></div>
+    <h3>Sinyaller</h3>
+    <div class="tablo-kap"><table id="gecmisTablo"></table></div>
+  </section>
+
+  <!-- BACKTEST -->
+  <section id="s-backtest" class="ekran gizli">
+    <div class="filtre">
+      <select id="btVaryant" aria-label="Varyant"></select>
+      <button id="btCalistir">Yeniden çalıştır (hızlı)</button>
+      <span id="btDurum" class="soluk"></span>
+    </div>
+    <div id="btBilgi" class="soluk"></div>
+    <p id="btKriter" class="uyari-kutu"></p>
+    <h3>Varyantlar</h3>
+    <div class="tablo-kap"><table id="btVaryantlar"></table></div>
+    <h3>Özkaynak eğrisi (eşit ağırlıklı portföy)</h3>
+    <div id="btGrafik" class="grafik kisa"></div>
+    <h3>Yıllık dilimler</h3>
+    <div class="tablo-kap"><table id="btDilim"></table></div>
+    <h3>Parametre sağlamlığı</h3>
+    <div id="btIzgaraOzet" class="soluk"></div>
+    <div class="tablo-kap"><table id="btIzgara"></table></div>
+    <h3>Walk-forward</h3>
+    <div class="tablo-kap"><table id="btWF"></table></div>
+    <h3>Sembol bazında</h3>
+    <div class="tablo-kap"><table id="btSembol"></table></div>
+    <h3>Türev verisi filtre deneyi (açık pozisyon, fonlama, long/short, taker)</h3>
+    <p id="btTurevNot" class="soluk"></p>
+    <div class="tablo-kap"><table id="btTurev"></table></div>
+    <h3>Sağlık kontrolleri</h3>
+    <div class="tablo-kap"><table id="btSaglik"></table></div>
+  </section>
+
+  <!-- AYARLAR -->
+  <section id="s-ayarlar" class="ekran gizli">
+    <div class="kart" id="telefonKart">
+      <h3>📱 Telefona kur</h3>
+      <div class="telefon-izgara">
+        <div id="telefonQr" class="qr"></div>
+        <div>
+          <p id="telefonUrl" class="kalin"></p>
+          <ol class="adimlar">
+            <li>Telefona <b>Tailscale</b> uygulamasını kurun ve bilgisayardaki hesapla giriş yapın.</li>
+            <li>Telefon kamerasıyla QR kodu okutun (veya adresi telefonda açın).</li>
+            <li><b>iPhone:</b> Safari'de Paylaş <span aria-hidden="true">⬆︎</span> → <i>Ana Ekrana Ekle</i>.
+              <b>Android:</b> Chrome'da <i>Uygulamayı yükle</i> (veya ⋮ → Ana ekrana ekle).</li>
+            <li>Artık ana ekrandaki <b>Vadeli</b> simgesine tek dokunuşla açılır.</li>
+          </ol>
+          <button id="yukleDugme" class="gizli">Bu cihaza uygulama olarak yükle</button>
+          <p id="telefonMesaj" class="soluk"></p>
+        </div>
+      </div>
+    </div>
+    <form id="ayarForm" class="kart form">
+      <label>Hesap büyüklüğü (USDT) <input name="hesap" type="number" step="any" min="10"></label>
+      <label>İşlem başına risk % <input name="risk_yuzde" type="number" step="0.05" min="0.05" max="5"></label>
+      <label>Maksimum kaldıraç <input name="max_kaldirac" type="number" step="1" min="1" max="50"></label>
+      <label>İzlenen sembol sayısı <input name="sembol_sayisi" type="number" step="1" min="1" max="100"></label>
+      <label class="kutu"><input name="telegram" type="checkbox"> Telegram bildirimi <span id="tgDurum" class="soluk"></span></label>
+      <label class="kutu"><input name="web_push" type="checkbox"> Web Push bildirimi</label>
+      <label class="kutu"><input name="zil" type="checkbox"> Terminalde zil</label>
+      <button type="submit">Kaydet</button>
+      <p id="ayarMesaj" class="soluk"></p>
+    </form>
+    <div class="kart">
+      <button id="pushAbone">Bu cihazda Web Push'u etkinleştir</button>
+      <p class="soluk">iPhone/iPad: Web Push yalnızca Safari'de "Ana Ekrana Ekle" ile kurulmuş uygulamada çalışır (iOS 16.4+).
+        Telegram daha güvenilirdir.</p>
+      <button id="cikisYap" class="ikincil">Oturumu kapat</button>
+    </div>
+  </section>
+</main>
+
+<div id="bildirim" class="toast gizli" role="status"></div>
+<script src="/static/lib/lightweight-charts.standalone.production.js"></script>
+<script src="/static/uygulama.js"></script>
+<script type="module" src="/static/tarama_baslat.js"></script>
+</body>
+</html>

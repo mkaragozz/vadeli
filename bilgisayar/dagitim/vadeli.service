@@ -1,0 +1,21 @@
+# /etc/systemd/system/vadeli.service  — VPS için örnek
+# Kurulum: sudo useradd -r -m -d /opt/vadeli-tarayici vadeli ; dosyaları /opt/vadeli-tarayici'ye kopyalayın
+[Unit]
+Description=Vadeli Sinyal Tarayici (emir gondermez)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=vadeli
+WorkingDirectory=/opt/vadeli-tarayici
+EnvironmentFile=/etc/vadeli/ortam
+ExecStart=/opt/vadeli-tarayici/.venv/bin/python tarayici.py tara --host 127.0.0.1 --port 8000 --sessiz
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/vadeli-tarayici
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

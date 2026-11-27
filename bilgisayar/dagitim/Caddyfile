@@ -1,0 +1,8 @@
+# /etc/caddy/Caddyfile — alan adını kendinizinkiyle değiştirin. Caddy sertifikayı otomatik alır/yeniler.
+tarama.ornek.com {
+	encode gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy 127.0.0.1:8000 {
+		flush_interval -1   # canlı olay akışı (SSE) için tamponlama kapalı
+	}
+}

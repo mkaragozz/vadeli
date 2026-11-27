@@ -1,0 +1,53 @@
+# Vadeli Tarayıcı yapılandırması. Kopyalayın:  cp config.example.toml config.toml
+# CLI bayrakları (--hesap, --risk, --port ...) bu dosyadaki değerlerin üstüne yazar.
+# Panodaki "Ayarlar" ekranından yapılan değişiklikler veritabanına kaydedilir ve bunların da üstüne yazar.
+# GİZLİ BİLGİ (parola, Telegram anahtarı) BU DOSYAYA YAZILMAZ — ortam değişkeni kullanın (README).
+
+[hesap]
+hesap = 1000.0          # USDT
+risk_yuzde = 1.0        # işlem başına stopa kadar riske edilen hesap yüzdesi
+max_kaldirac = 5.0      # kaldıraç tavanı (kaldıraç ayrıca stop <= likidasyon mesafesinin %50'si kuralıyla sınırlanır)
+mmr = 0.005             # bakım teminatı oranı (temkinli)
+sembol_sayisi = 50      # hacme göre ilk N USDT-M perpetual
+
+[strateji]
+# Varsayılan = doğrulamayı geçen "4s_tetik_btc" varyantı (RAPOR.md). Şartnamedeki orijinal strateji
+# (1s tetik, BTC filtresi yok) gerçek veride kenar GÖSTERMEDİ; onu denemek için tetik_tf="1h", btc_filtre=false.
+tetik_tf = "4h"         # "1h" veya "4h"
+rejim_tf = "4h"
+giris_n = 20
+cikis_n = 10
+atr_n = 14
+atr_kat = 3.0
+ema_n = 200
+btc_filtre = true       # true: LONG yalnız BTC 4s > EMA200 iken, SHORT yalnız altındayken
+yon = "ikisi"           # "ikisi" | "long" | "short"
+# Türev konumlanma filtreleri (Binance açık pozisyon / fonlama / long-short / taker; DENEYLER.md §1)
+oi_teyit = true         # kırılımda açık pozisyon son oi_n mumda artmış olmalı (deneyde kabul edilen tek filtre)
+oi_n = 6
+fonlama_esik = 0.0      # 0 = kapalı (deneyde kabul edilmedi)
+kalabalik_z = 0.0       # 0 = kapalı (etkisi gürültü düzeyinde)
+taker_teyit = false     # deneyde kabul edilmedi
+
+[maliyet]
+komisyon = 0.0005       # taker, yön başına
+kayma = 0.0003
+fonlama_8s = 0.0001
+
+[tarama]
+tarama_gecikme_sn = 5   # mum kapanışından kaç saniye sonra
+evren_yenileme_saat = 24
+gecmis_mum = 3000       # ilk ısınma (EMA200 4s için yeterli)
+websocket = true
+
+[pano]
+host = "127.0.0.1"      # yalnızca bu bilgisayar. Tailscale için Tailscale IP'nizi (100.x.y.z) yazın.
+port = 8000
+guvenli_cerez = false   # Caddy/HTTPS arkasında true
+log_seviye = "INFO"
+telefon = "otomatik"    # Tailscale kuruluysa telefon için güvenli HTTPS adresi + QR kodu ("kapali" ile kapatın)
+
+[bildirim]
+telegram = false        # TG_TOKEN ve TG_CHAT ortam değişkenleri gerekli
+web_push = false        # VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY + pip install pywebpush
+zil = true
