@@ -99,6 +99,8 @@ def ozellikler(df: pd.DataFrame, ust: pd.DataFrame | None, tf: str, btc: pd.Data
     else:
         out["btc_trend"] = out["btc_g20"] = np.nan
     out["zirveden"] = c / c.rolling(250, min_periods=250).max() - 1   # telefon 500 mum çeker: 250 mumluk zirve hesaplanabilir
+    out["hurst"] = hurst(c)
+    out["perm_entropi"] = perm_entropi(c)
     return out.replace([np.inf, -np.inf], np.nan)
 
 
@@ -173,8 +175,44 @@ def veri_seti(tf: str, semboller: list[str] | None = None) -> dict[str, pd.DataF
 
 
 # ------------------------------------------------------------------ modeller
+KAOS_OZELLIK = ["hurst", "perm_entropi"]
+KAOS = False  # DENEYLER.md §10: True iken modeller kaos özelliklerini de kullanır (uret_kaos)
+
+
 def sutunlar(g: str) -> list[str]:
-    return OZELLIK + {"A": ["sinyal", "yon"], "B": [], "C": ["sinif"], "D": ["yon"]}[g]
+    return OZELLIK + (KAOS_OZELLIK if KAOS else []) + {"A": ["sinyal", "yon"], "B": [], "C": ["sinif"], "D": ["yon"]}[g]
+
+
+def hurst(c: pd.Series, pencere: int = 100, gecikmeler=range(1, 11)) -> pd.Series:
+    """Varyans ölçekleme Hurst üssü (DENEYLER.md §10): son `pencere` mumdaki τ gecikmeli log fiyat farklarının kareler
+    ortalamasının kökü τ^H ile ölçeklenir; H = log RMS'nin log τ'ya regresyon eğimi. Ortalama çıkarılmaz (örtüşen farklarda
+    ortalama çıkarmak uzun gecikmeleri küçültüp H'yi aşağı çeker; rastgele yürüyüşte 0.39 yerine 0.49 verir).
+    Satır t yalnız t ve öncesini kullanır."""
+    lp = np.log(c)
+    lt = np.log(np.array(list(gecikmeler), dtype=float))
+    xm = lt - lt.mean()
+    Y = np.vstack([np.log(np.sqrt(((lp - lp.shift(t)) ** 2).rolling(pencere, min_periods=pencere).mean())).to_numpy()
+                   for t in gecikmeler])                  # gecikme × zaman
+    with np.errstate(invalid="ignore"):
+        egim = (xm[:, None] * (Y - Y.mean(axis=0))).sum(axis=0) / (xm ** 2).sum()
+    return pd.Series(egim, index=c.index).replace([np.inf, -np.inf], np.nan)
+
+
+def perm_entropi(c: pd.Series, pencere: int = 100, sira: int = 3) -> pd.Series:
+    """Permütasyon entropisi (Bandt-Pompe, sıra 3), 0-1 arası normalleştirilmiş; son `pencere` mumun desenleri."""
+    x = c.to_numpy(float)
+    n = len(x)
+    desen = np.full(n, -1)
+    if n >= sira:
+        from numpy.lib.stride_tricks import sliding_window_view as sw
+        w = sw(x, sira)
+        kod = np.argsort(w, axis=1, kind="stable")
+        desen[sira - 1:] = (kod * np.array([sira ** i for i in range(sira)])).sum(axis=1)
+    say = pd.get_dummies(pd.Series(desen, index=c.index)).drop(columns=[-1], errors="ignore").astype(float)
+    adet = say.rolling(pencere - sira + 1, min_periods=pencere - sira + 1).sum()
+    p = adet.div(adet.sum(axis=1), axis=0)
+    h = -(p * np.log(p.where(p > 0))).sum(axis=1, min_count=1)
+    return (h / np.log(math.factorial(sira))).where(adet.notna().all(axis=1))
 
 
 def _taban(tr: pd.DataFrame, te: pd.DataFrame, g: str) -> np.ndarray:
@@ -419,3 +457,37 @@ def ogrenci_uret(rapor: dict | None = None, veri_cache: dict | None = None) -> d
             log.info("öğrenci %s %s: öğretmen %s (%s), korelasyon %.3f", tf, g, ogretmen, durum, kor)
     (MOBIL / "meta_model.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     return out
+
+
+
+def uret_kaos(tfler=("1w", "3d", "1d", "4h"), modeller=("taban", "lojistik", "lightgbm", "tabicl", "tabdpt", "mitra")) -> dict:
+    """DENEYLER.md §10 deney 1 (kaos özellikleriyle aynı çalışma) ve deney 2 (Hurst rejim tablosu). Çıktı: raporlar/meta_kaos.json"""
+    global KAOS
+    yol = KOK / "raporlar" / "meta_kaos.json"
+    rapor = json.loads(yol.read_text()) if yol.exists() else {}
+    for tf in tfler:
+        t0 = time.time()
+        d = veri_seti(tf)
+        # Deney 2: Hurst üçte birlerine göre isabet (A, D), 2021-01 → 2026-10
+        rejim = {}
+        for g in ("A", "D"):
+            if g not in d:
+                continue
+            x = d[g][(d[g].index >= pd.Timestamp("2021-01-01", tz="UTC"))].dropna(subset=["hurst"])
+            if len(x) < 300:
+                continue
+            q = x["hurst"].quantile([1 / 3, 2 / 3]).to_numpy()
+            dilim = np.where(x["hurst"] <= q[0], "dusuk", np.where(x["hurst"] <= q[1], "orta", "yuksek"))
+            rejim[g] = {"esikler": [float(q[0]), float(q[1])], "genel": float(x["y"].mean()), "n": int(len(x)),
+                        "dilimler": {k: {"isabet": float(x["y"][dilim == k].mean()), "n": int((dilim == k).sum()),
+                                         "hurst_ort": float(x["hurst"][dilim == k].mean())} for k in ("dusuk", "orta", "yuksek")}}
+        KAOS = True
+        try:
+            rapor[tf] = degerlendir(tf, modeller=modeller, veri_=d)
+        finally:
+            KAOS = False
+        rapor[tf]["_rejim"] = rejim
+        rapor[tf]["_sure_sn"] = round(time.time() - t0)
+        yol.write_text(json.dumps(rapor, ensure_ascii=False, indent=1))
+        log.info("kaos %s bitti %.0fs", tf, time.time() - t0)
+    return rapor

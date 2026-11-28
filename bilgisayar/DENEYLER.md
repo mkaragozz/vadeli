@@ -422,7 +422,9 @@ Tabloda test yıllarının birleşik AUC'si (parantezde holdout 2025-26). Taban 
 
 **Soru (kullanıcı):** kaos teorisi araçları yön ve sinyal tahminine yüzde olarak ne katıyor?
 **Özellikler** (her mumda yalnız o ana kadarki son 100 mumun log fiyatından, look-ahead yok):
-* `hurst`: Hurst üssü, varyans ölçekleme yöntemi: τ = 2…20 için std(log p[t] − log p[t−τ]) ∝ τ^H, eğim = H.
+* `hurst`: Hurst üssü, varyans ölçekleme yöntemi: τ = 1…10 için RMS(log p[t] − log p[t−τ]) ∝ τ^H, eğim = H.
+  (Sonuçlardan önce düzeltildi: ilk tanım — τ = 2…20, ortalaması çıkarılmış std — yapay rastgele yürüyüşte 0.39 veriyordu;
+  bu tanım 0.49 veriyor, trendli seride 0.74, ortalamaya dönende 0.16.)
   H > 0.5 trend sürekliliği, H < 0.5 ortalamaya dönüş, ≈ 0.5 rastgele yürüyüş.
 * `perm_entropi`: permütasyon entropisi (Bandt-Pompe, sıra 3), 0 = tamamen düzenli, 1 = tamamen düzensiz.
 * Lyapunov üssü **alınmadı**: 100 mumluk pencerede güvenilir tahmin edilemiyor.
