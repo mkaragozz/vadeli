@@ -415,3 +415,24 @@ Tabloda test yıllarının birleşik AUC'si (parantezde holdout 2025-26). Taban 
 * **Telefon:** öğretmen LightGBM ise kendisi aktarıldı (birebir). TabDPT (3g seviye) öğrencisi çapraz skorlamayla bile
   korelasyon 0.41'de kaldı (< 0.9) → kural gereği telefonda bu görev için yalnız taban. Haftalık yön (TabICL) da 0.17 → yok.
 * Ağaçlar kompakt biçimde: 12 model 2.4 MB (sıkıştırılmış 0.76 MB).
+
+---
+
+## 10. Ön kayıt — kaos teorisi özellikleri (2026-11-28, sonuçlar görülmeden)
+
+**Soru (kullanıcı):** kaos teorisi araçları yön ve sinyal tahminine yüzde olarak ne katıyor?
+**Özellikler** (her mumda yalnız o ana kadarki son 100 mumun log fiyatından, look-ahead yok):
+* `hurst`: Hurst üssü, varyans ölçekleme yöntemi: τ = 2…20 için std(log p[t] − log p[t−τ]) ∝ τ^H, eğim = H.
+  H > 0.5 trend sürekliliği, H < 0.5 ortalamaya dönüş, ≈ 0.5 rastgele yürüyüş.
+* `perm_entropi`: permütasyon entropisi (Bandt-Pompe, sıra 3), 0 = tamamen düzenli, 1 = tamamen düzensiz.
+* Lyapunov üssü **alınmadı**: 100 mumluk pencerede güvenilir tahmin edilemiyor.
+
+**Deney 1 — model katkısı:** §9 ile birebir aynı düzen (4 görev × 4 zaman dilimi, aynı modeller, aynı test yılları),
+yalnız özellik listesine bu iki sütun eklenir. Ölçü: her görev × zaman diliminde en iyi modelin AUC'si, kaoslu ve kaossuz.
+**Kabul ("kaos özellikleri uygulamaya girer"):** (a) görev × zaman dilimlerinin en az yarısında en iyi AUC ≥ +0.01 artar;
+(b) hiçbir görev × zaman diliminde holdout AUC'si 0.01'den fazla düşmez; (c) daha önce kabul edilen 3 görevde (3g ve
+günlük seviye kırılımı, günlük hacim sonrası) kabul kuralı yine geçer. Sağlanmazsa yalnız rapor edilir, uygulama değişmez.
+
+**Deney 2 — rejim tablosu (betimleyici, karar kuralı yok):** sinyal kalitesi (A) ve seviye kırılımı (D) olaylarında
+Hurst üçte birlerine göre (düşük / orta / yüksek) isabet oranı; "trendli rejimde kırılımlar daha mı iyi tutuyor?" sorusunun
+yüzde cevabı. 2021-01 → 2026-10.
